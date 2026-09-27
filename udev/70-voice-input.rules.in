@@ -1,0 +1,2 @@
+SUBSYSTEM=="input", ENV{ID_INPUT_KEYBOARD}=="1", ATTRS{idVendor}=="060b", TAG+="uaccess"
+SUBSYSTEM=="input", ENV{ID_INPUT_KEYBOARD}=="1", ATTRS{name}=="Apple SPI Keyboard", RUN+="/usr/bin/setfacl -m u:@USER@:rw $env{DEVNAME}"

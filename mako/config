@@ -1,0 +1,14 @@
+anchor=top-right
+width=360
+height=120
+margin=16
+padding=14
+border-size=2
+border-radius=10
+border-color=#7fc8ff
+background-color=#282c34
+text-color=#abb2bf
+font=Sarasa Mono SC 12
+default-timeout=2500
+max-visible=3
+ignore-timeout=0
