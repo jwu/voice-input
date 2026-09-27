@@ -13,7 +13,7 @@ if [[ ! -r /etc/arch-release ]]; then
   exit 1
 fi
 
-pacman -S --needed ffmpeg wtype wl-clipboard opencc python-evdev libnotify mako acl curl
+pacman -S --needed ffmpeg wtype wl-clipboard opencc python-evdev python-pip libnotify mako acl curl
 rule="$(mktemp)"
 trap 'rm -f "$rule"' EXIT
 sed "s/@USER@/$USER_NAME/g" "$ROOT/udev/70-voice-input.rules.in" > "$rule"

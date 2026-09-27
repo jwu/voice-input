@@ -12,11 +12,16 @@ from pathlib import Path
 
 from evdev import InputDevice, list_devices, ecodes
 from opencc import OpenCC
+from english_spacing import add_english_spaces
 
 ASSET_DIR = Path.home() / ".local/share/voice-input"
+BACKEND = os.environ.get("VOICE_INPUT_BACKEND", "paraformer").strip().lower()
 FUNASR_RUNTIME = ASSET_DIR / "runtime/llama-funasr-paraformer"
 MODEL = ASSET_DIR / "models/paraformer-q8.gguf"
 VAD_MODEL = ASSET_DIR / "models/fsmn-vad.gguf"
+FIRERED_MODEL_DIR = ASSET_DIR / "models/sherpa-onnx-fire-red-asr2-ctc-zh_en-int8-2026-02-25"
+FIRERED_PYTHON = ASSET_DIR / "firered-venv/bin/python"
+FIRERED_SCRIPT = Path(__file__).with_name("recognize_firered.py")
 WAVEFORM = "▁▂▃▄▅▆▇█"
 TO_SIMPLIFIED = OpenCC("t2s")
 
@@ -95,8 +100,16 @@ async def main():
     if not devices:
         notify("找不到可访问的键盘；检查键盘 udev 权限", 4000)
         return
-    if not MODEL.exists() or not FUNASR_RUNTIME.exists() or not VAD_MODEL.exists():
-        notify("Paraformer 量化模型或运行时文件缺失", 4000)
+    if BACKEND == "firered":
+        if not FIRERED_PYTHON.is_file() or not (FIRERED_MODEL_DIR / "model.int8.onnx").is_file():
+            notify("FireRedASR2 模型或运行环境缺失；请重新运行安装脚本", 5000)
+            return
+    elif BACKEND == "paraformer":
+        if not MODEL.exists() or not FUNASR_RUNTIME.exists() or not VAD_MODEL.exists():
+            notify("Paraformer 量化模型或运行时文件缺失", 4000)
+            return
+    else:
+        notify(f"未知语音识别后端：{BACKEND}", 5000)
         return
 
     recording = None
@@ -120,11 +133,12 @@ async def main():
             return
         notify("正在本机识别…\n请稍候")
         try:
-            result = subprocess.run(
-                [str(FUNASR_RUNTIME), "-m", str(MODEL), "--vad", str(VAD_MODEL), "-a", path],
-                capture_output=True, text=True, check=True,
-            ).stdout.strip()
-            result = TO_SIMPLIFIED.convert(result)
+            if BACKEND == "firered":
+                command = [str(FIRERED_PYTHON), str(FIRERED_SCRIPT), path]
+            else:
+                command = [str(FUNASR_RUNTIME), "-m", str(MODEL), "--vad", str(VAD_MODEL), "-a", path]
+            result = subprocess.run(command, capture_output=True, text=True, check=True).stdout.strip()
+            result = add_english_spaces(TO_SIMPLIFIED.convert(result))
             if result:
                 subprocess.run(["wl-copy", "--type", "text/plain;charset=utf-8"], input=result, text=True, check=True)
                 await asyncio.sleep(0.12)

@@ -3,6 +3,7 @@ Description=Local push-to-talk voice input
 After=graphical-session.target
 
 [Service]
+EnvironmentFile=-%h/.config/voice-input/config
 Type=simple
 ExecStart=%h/.local/bin/voice-input.py
 Restart=on-failure
