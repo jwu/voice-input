@@ -168,8 +168,7 @@ async def main():
                 fd, wav_path = tempfile.mkstemp(prefix="pi-voice-", suffix=".wav")
                 os.close(fd)
                 recording = await asyncio.create_subprocess_exec(
-                    "ffmpeg", "-nostdin", "-loglevel", "error", "-f", "pulse", "-i", "default",
-                    "-ac", "1", "-ar", "16000", "-f", "s16le", "-acodec", "pcm_s16le", "pipe:1",
+                    "pw-record", "--rate", "16000", "--channels", "1", "--format", "s16", "-",
                     stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.DEVNULL,
                 )
                 capture_task = asyncio.create_task(capture_audio(recording, wav_path))

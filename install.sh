@@ -15,7 +15,7 @@ if [[ ! -r /etc/arch-release ]]; then
   exit 1
 fi
 
-for command in ffmpeg wtype wl-copy notify-send mako curl setfacl; do
+for command in pw-record wtype wl-copy notify-send mako curl setfacl; do
   if ! command -v "$command" >/dev/null 2>&1; then
     echo "Missing system dependency: $command. Run sudo ./setup-system.sh first." >&2
     exit 1
