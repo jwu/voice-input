@@ -55,7 +55,7 @@ systemctl --user restart voice-input.service
 /etc/udev/rules.d/70-voice-input.rules
 ```
 
-识别引擎按需启动：模型不会常驻占用数 GB 内存。当前输入设备对应的 udev 规则匹配 Apple SPI 内置键盘与 USB 厂商 ID `060b`；更换键盘时应修改 `udev/70-voice-input.rules.in` 中的匹配条件。
+识别引擎按需启动：模型不会常驻占用数 GB 内存。udev 规则按设备名授权（当前为 `ASUSTeK ROG OMNI RECEIVER Keyboard`、`MOSART Semi. wireless dongle`，另有一条 Apple SPI 内置键盘规则）；更换键盘时用 `udevadm info --attribute-walk --name=/dev/input/eventN | grep name` 查到新设备名，改 `udev/70-voice-input.rules.in` 后重新执行 `sudo ./setup-system.sh`。
 
 ## 诊断
 
