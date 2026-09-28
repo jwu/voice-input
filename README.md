@@ -1,5 +1,16 @@
 # Voice Input
 
+> **DEPRECATED（2026-09）—— 已被 voxtype + wordseg-rs 取代，本仓库不再维护、不再部署。**
+>
+> | 原来的部分 | 现在在哪 |
+> | --- | --- |
+> | 按住说话（F12，evdev 监听） | [voxtype](https://github.com/peteonrails/voxtype) —— F9 按住说话 |
+> | 中文识别（Paraformer Q8） | voxtype 的 Paraformer 引擎 |
+> | 英文连写补空格（wordninja） | [wordseg-rs](https://github.com/jwu/wordseg-rs) —— 本仓库 `english_spacing.py` 的 Rust 重写，已发布 crates.io |
+> | 安装、服务与设备配置 | [jwu/dotfiles](https://github.com/jwu/dotfiles)：`dot_config/voxtype/` + `bootstrap/arch.sh` |
+>
+> 保留此仓库只作设计记录（引擎取舍、英文补空格的缘由、udev uaccess 等踩过的坑），新部署不要再用它。
+
 Arch Linux / Wayland 下的全局按住说话输入工具。按住 F12 录音，松开后在本机运行 Paraformer Q8，把简体中文转写粘贴到当前焦点应用；不自动发送。FireRedASR2 CTC INT8 仍可切换使用。
 
 ## 功能
